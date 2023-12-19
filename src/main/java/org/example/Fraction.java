@@ -2,7 +2,7 @@ package org.example;
 
 import lombok.AllArgsConstructor;
 
-public class Fraction {
+public class Fraction extends Number{
 
     private final int up;
     private final int down;
@@ -67,5 +67,25 @@ public class Fraction {
     @Override
     public String toString() {
         return up+"/"+down;
+    }
+
+    @Override
+    public int intValue() {
+        return (int)(up/((double)down));
+    }
+
+    @Override
+    public long longValue() {
+        return (long)(up/((double)down));
+    }
+
+    @Override
+    public float floatValue() {
+        return (up/((float)down));
+    }
+
+    @Override
+    public double doubleValue() {
+        return (up/((double)down));
     }
 }

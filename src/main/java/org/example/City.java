@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class City {
 
-    String name;
-    Set<Route> routeList = new HashSet<>();
+    private String name;
+    private Set<Route> routeList = new HashSet<>();
     public record Route(City target, int price){}
 
     public City(String name){
@@ -31,10 +31,14 @@ public class City {
     }
 
     public void addRoute(City target, int price){
-        // двухсторонняя дорога - это 2 дороги или 1? считаем что 2
-        if(this.hasRouteTo(target) || target.hasRouteTo(this))
-            throw new IllegalArgumentException("Already has road!");
+        if(this.hasRouteTo(target))
+            throw new IllegalArgumentException("Already has road to "+target+"!");
         routeList.add(new Route(target, price));
+    }
+
+    // replaced public set<> with getter
+    public Optional<Route> getRouteTo(City target){
+        return routeList.stream().filter(r -> r.target == target).findAny();
     }
 
     @Override

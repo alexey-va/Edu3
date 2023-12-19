@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class Cat {
+public class Cat implements Meowable {
 
     String name;
 

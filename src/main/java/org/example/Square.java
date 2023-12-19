@@ -3,7 +3,7 @@ package org.example;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public class Square {
+public class Square implements Chainable{
 
     Point leftUpperCorner;
     @Getter
@@ -21,12 +21,11 @@ public class Square {
     }
 
     public BrokenLine toLine(){
-        return new BrokenLine(
+        return new Main.LoopedBrokenLine(
                 new Point(leftUpperCorner.x, leftUpperCorner.y),
                 new Point(leftUpperCorner.x+side, leftUpperCorner.y),
                 new Point(leftUpperCorner.x+side, leftUpperCorner.y-side),
-                new Point(leftUpperCorner.x, leftUpperCorner.y-side),
-                new Point(leftUpperCorner.x, leftUpperCorner.y)
+                new Point(leftUpperCorner.x, leftUpperCorner.y-side)
         );
     }
 

@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class BrokenLine {
+public class BrokenLine implements Measurable {
 
-    List<Point> points;
+    private List<Point> points;
 
     public BrokenLine(Point... points) {
         this.points = Arrays.stream(points).collect(Collectors.toList());
