@@ -15,6 +15,8 @@ public class Employee {
     private Department department;
 
     public void moveToDepartment(@NonNull Department department){
+        Department oldDepartment = this.department;
+        if(oldDepartment != null) oldDepartment.removeEmployees(this);
         this.department = department;
         department.addEmployees(this);
     }
