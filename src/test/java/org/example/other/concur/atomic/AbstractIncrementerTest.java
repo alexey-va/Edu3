@@ -35,6 +35,7 @@ class AbstractIncrementerTest {
             "BasicIncrementer, 256"
     })
     public void test(String className, int threads) throws Exception{
+
         Class clazz = Class.forName("org.example.other.concur.atomic."+className);
         AbstractIncrementer abstractIncrementer =
                 (AbstractIncrementer) clazz.getConstructor(int.class, int.class).newInstance(threads, 10000000);
