@@ -1,32 +1,42 @@
 package org.example.other.events;
 
-public class MyEventListener implements EventListener{
+import org.example.other.events.base.Event;
+import org.example.other.events.base.EventHandler;
+import org.example.other.events.base.EventListener;
 
-    @EventHandler
-    public void onMyCustomEvent(MyCustomEvent event){
-        System.out.println("MyCustomEvent MEDIUM: " + event.getMessage());
-        event.setCancelled(true);
+public class MyEventListener implements EventListener {
+
+    @EventHandler(priority = Event.Priority.HIGH)
+    public void onMyCustomEvent(MyCustomEvent event) {
+            event.setMessage("Third filter");
     }
 
     @EventHandler(priority = Event.Priority.LOW)
-    public void onMyEvent2(MyCustomEvent event){
-        System.out.println("MyCustomEvent LOW: " + event.getMessage());
+    public void onMyCustomEvent2(MyCustomEvent event) {
+            event.setMessage("First filter");
+    }
+
+    @EventHandler(priority = Event.Priority.MEDIUM)
+    public void onMyCustomEvent3(MyCustomEvent event) {
+            event.setMessage("Second filter");
+            event.setCancelled(true);
+    }
+
+    @EventHandler(priority = Event.Priority.LOW)
+    public void onMyCustomEvent4(MySecondCustomEvent event) {
+            event.setTopic("First filter");
+    }
+
+    @EventHandler(priority = Event.Priority.MEDIUM)
+    public void onMyCustomEvent5(MySecondCustomEvent event) {
+            event.setTopic("Second filter");
+            event.setCancelled(true);
     }
 
     @EventHandler(priority = Event.Priority.HIGH, ignoreCancelled = true)
-    public void onMyEvent3(MyCustomEvent event){
-        event.setCancelled(true);
-        System.out.println("MyCustomEvent HIGH: " + event.getMessage());
+    public void onMyCustomEvent6(MySecondCustomEvent event) {
+            event.setTopic("Third filter");
     }
 
-    @EventHandler(priority = Event.Priority.LOW)
-    public void onMyEvent4(MyCustomEvent event){
-        System.out.println("MyCustomEvent LOW 2: " + event.getMessage());
-    }
-
-    @EventHandler
-    public void onDoSmth(MySecondCustomEvent event){
-        event.setTopic("I changed it!");
-    }
 
 }

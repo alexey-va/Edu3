@@ -1,4 +1,4 @@
-package org.example.other.events;
+package org.example.other.events.base;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,5 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EventHandler {
     Event.Priority priority() default Event.Priority.MEDIUM;
+
     boolean ignoreCancelled() default false;
 }

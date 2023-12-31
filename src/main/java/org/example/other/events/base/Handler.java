@@ -1,4 +1,4 @@
-package org.example.other.events;
+package org.example.other.events.base;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,8 +9,9 @@ import java.lang.reflect.InvocationTargetException;
 @Setter
 public abstract class Handler {
 
-    private Event.Priority priority;
-    private boolean ignoreCancelled;
+    Event.Priority priority;
+    boolean ignoreCancelled;
+    EventListener parentInstance;
 
     public abstract void handle(Event event) throws InvocationTargetException, IllegalAccessException;
 

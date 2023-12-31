@@ -1,30 +1,31 @@
 package org.example.main;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.example.living.Bird;
 import org.example.living.Meowable;
 import org.example.geometry.*;
+import org.example.living.Person;
+import org.example.other.jni.TestLib;
+
 import static java.lang.Math.*;
 import java.awt.Point.*;
 
+import java.io.Serializable;
 import java.lang.Double;
 import java.util.*;
 
 @Log4j2
 public class Main {
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException, InterruptedException {
-        if(args.length == 2){
-            log.info(myPow(args[0], args[1]));
-        }
-
-        java.awt.Point p1 = new java.awt.Point(1, 1);
-        Point p2 = new Point(2, 2);
-
-        log.info(p1);
-        log.info(p2);
-
-
+        TestLib testLib = new TestLib();
+        testLib.sayHello();
+        System.out.println(testLib.getPid());
     }
+
 
 
 

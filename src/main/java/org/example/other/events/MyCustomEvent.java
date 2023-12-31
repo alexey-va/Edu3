@@ -3,20 +3,13 @@ package org.example.other.events;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.EnumMap;
-import java.util.List;
+import org.example.other.events.base.Event;
 
 @Setter
 @Getter
 @Builder
-public class MyCustomEvent extends Event{
-    private static EnumMap<Priority, List<Handler>> HANDLERS_MAP = new EnumMap<>(Priority.class);
-
+public class MyCustomEvent extends Event {
     private String message;
 
-    @Override
-    public EnumMap<Priority, List<Handler>> getHandlersMap() {
-        return HANDLERS_MAP;
-    }
+
 }

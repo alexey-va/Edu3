@@ -10,11 +10,46 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class MainTest {
+
+    @Test
+    void abc(){
+        List<String> list = new ArrayList<>();
+        list.add("1");
+        List<?> newlist = list;
+        newlist.add(null);
+        List<Object> newlist2 = new ArrayList<>();
+        newlist2.add("1");
+
+        List<? super Integer> list2 = new ArrayList<>();
+        list2.add(1);
+        list2.add(null);
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(10);
+        byteBuffer.put((byte)1);
+        byteBuffer.put((byte)2);
+        byteBuffer.put((byte)3);
+        byteBuffer.putInt(2_000_000_000);
+
+        for(int i = 0; i < 10; i++){
+            System.out.println(byteBuffer.get(i));
+        }
+
+        //print(list);
+    }
+
+    private void print(List<?> list){
+        for (Object o : list){
+            System.out.println(o);
+        }
+    }
 
     @Test
     void testGetUnion() {
