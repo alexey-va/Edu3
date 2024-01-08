@@ -57,8 +57,8 @@ public class EventManager {
     }
 
 
-    public <T extends Event> T run(T event) {
-        return (T) event.run();
+    public Event run(Event event) {
+        return event.run();
     }
 
 }

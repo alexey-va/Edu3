@@ -19,7 +19,6 @@ public class PriorityDiningPhilosophers extends AbstractDiningPhilosophers{
     @Getter
     List<Thread> threads = new ArrayList<>();
 
-    @Getter
     Queue<String> log = new ConcurrentLinkedQueue<>();
 
     public PriorityDiningPhilosophers(int count, int bites) {

@@ -115,19 +115,19 @@ public class CustomConcurrentHashMap<K, V> implements ConcurrentMap<K, V> {
     }
 
     @Override
-    public Set<K> keySet() {
-        Set<K> values = new HashSet<>();
+    public Collection<V> values() {
+        Collection<V> values = new ArrayList<>();
         for (Region<K, V> region : regions) {
-            values.addAll(region.getEntrySet().stream().map(Map.Entry::getKey).toList());
+            values.addAll(region.getEntrySet().stream().map(Map.Entry::getValue).toList());
         }
         return values;
     }
 
     @Override
-    public Collection<V> values() {
-        Collection<V> values = new ArrayList<>();
+    public Set<K> keySet() {
+        Set<K> values = new HashSet<>();
         for (Region<K, V> region : regions) {
-            values.addAll(region.getEntrySet().stream().map(Map.Entry::getValue).toList());
+            values.addAll(region.getEntrySet().stream().map(Map.Entry::getKey).toList());
         }
         return values;
     }

@@ -1,0 +1,113 @@
+.root{
+    -fx-background-color: white;
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10 10 10 10;
+}
+
+#title{
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Lucida Console";
+}
+
+#leftPane {
+    -fx-background-color: rgba(0, 0, 0, 0.12);
+}
+
+#bgImage{
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10 10 10 10;
+    -fx-opacity: 0.3;
+    -fx-background-color: white;
+}
+
+.text-field{
+    -fx-font-size: 14px;
+    -fx-padding: 0 0 0 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(0, 0, 0, 0.52);
+    -fx-font-family: "Lucida Console";
+    -fx-background-color: rgba(0, 0, 0, 0.12);
+
+}
+
+#password.not-empty {
+    -fx-font-size: 10px;
+    -fx-padding: 2px 2px 0 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(0, 0, 0, 0.52);
+    -fx-font-family: "Lucida Console";
+    -fx-background-color: rgba(0, 0, 0, 0.12);
+}
+
+.button{
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+    -fx-font-family: "Lucida Console";
+    -fx-background-color: rgba(0, 0, 0, 0.22);
+
+}
+
+.button:hover{
+    -fx-background-color: rgba(0, 0, 0, 0.44);
+}
+
+#close{
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(0, 0, 0, 0.62);
+    -fx-font-family: "Lucida Console";
+    -fx-background-color: transparent;
+    -fx-border-radius: 5px;
+    -fx-border-color: rgba(0, 0, 0, 0.42);
+}
+
+#close:hover{
+    -fx-background-color: rgba(0, 0, 0, 0.08);
+    -fx-background-radius: 5px;
+}
+
+
+#minimize{
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(0, 0, 0, 0.62);
+    -fx-font-family: "Lucida Console";
+    -fx-background-color: transparent;
+    -fx-border-radius: 5px;
+    -fx-border-color: rgba(0, 0, 0, 0.42);
+}
+
+#minimize:hover{
+    -fx-background-color: rgba(0, 0, 0, 0.08);
+    -fx-background-radius: 5px;
+}
+
+
+.check-box {
+    -fx-font-size: 16px;
+    -fx-font-weight: 200;
+    -fx-text-fill: black;
+    -fx-font-family: Montserrat;
+    -fx-label-padding: 0 0 0 20px;
+}
+
+.check-box > .box {
+    -fx-background-color: gray;
+    -fx-background-radius: 20px;
+    -fx-max-width: 5px;
+}
+
+.check-box:selected > .box > .mark {
+    -fx-background-color: white;
+    -fx-background-radius: 20px;
+    -fx-max-width: 5px;
+}
+
+#tetrisBg{
+    -fx-background-color: rgba(0, 0, 0, 0.12);
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10 10 10 10;
+}
