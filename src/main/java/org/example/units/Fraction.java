@@ -1,6 +1,6 @@
 package org.example.units;
 
-public class Fraction extends Number{
+public class Fraction extends Number implements Cloneable{
 
     private final int up;
     private final int down;
@@ -48,6 +48,8 @@ public class Fraction extends Number{
     }
 
     private static int gcd(int a, int b) {
+        a= Math.abs(a);
+        b= Math.abs(b);
         while (a != b) {
             if (a > b) {
                 a = a - b;
@@ -85,5 +87,24 @@ public class Fraction extends Number{
     @Override
     public double doubleValue() {
         return (up/((double)down));
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o == null) return false;
+        if(o == this) return true;
+        if(o.getClass() != getClass()) return false;
+        Fraction fraction = (Fraction) o;
+        // constructor does fraction normalization -> no need to do it here
+        return fraction.up == up && fraction.down == down;
+    }
+
+    @Override
+    public Fraction clone() {
+        try {
+            return (Fraction) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

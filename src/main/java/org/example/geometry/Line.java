@@ -3,9 +3,11 @@ package org.example.geometry;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Objects;
+
 @Builder
 @Data
-public class Line implements Measurable{
+public class Line implements Measurable, Cloneable{
 
     private Point start, end;
 
@@ -44,5 +46,35 @@ public class Line implements Measurable{
     @Override
     public String toString(){
         return "Line from "+start+" to "+end;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+
+        Line line = (Line) object;
+
+        if(Objects.equals(start, line.start) && Objects.equals(end, line.end)) return true;
+        return Objects.equals(start, line.end) && Objects.equals(end, line.start);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = start != null ? start.hashCode() : 0;
+        result = result + (end != null ? end.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public Line clone() {
+        try {
+            Line clone = (Line) super.clone();
+            clone.start = start.clone();
+            clone.end = end.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

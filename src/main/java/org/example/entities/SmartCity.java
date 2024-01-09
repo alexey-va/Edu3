@@ -7,6 +7,10 @@ class SmartCity extends City {
         super(name);
     }
 
+    public SmartCity(String name, City.Route... routes) {
+        super(name, routes);
+    }
+
     @Override
     public void addRoute(City target, int price) {
         super.addRoute(target, price);

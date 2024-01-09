@@ -8,7 +8,7 @@ import java.text.DecimalFormatSymbols;
 
 @Data
 @AllArgsConstructor
-public class Point {
+public class Point implements Cloneable {
 
     private static final DecimalFormat format = new DecimalFormat("##.#") {{
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
@@ -28,4 +28,29 @@ public class Point {
                 "," + format.format(y) +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == null) return false;
+        if(o == this) return true;
+        if(o.getClass() != this.getClass()) return false;
+        return Math.abs(this.x - ((Point) o).x) < 1e-14
+                && Math.abs(this.y - ((Point) o).y) < 1e-14;
+    }
+
+    @Override
+    public int hashCode() {
+        return Double.hashCode(x)*31 + Double.hashCode(y);
+    }
+
+    @Override
+    public Point clone() {
+        try {
+            return (Point) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }
