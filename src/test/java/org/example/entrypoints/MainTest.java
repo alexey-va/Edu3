@@ -23,15 +23,15 @@ class MainTest {
 
     @Test
     void fizzBuzz(){
-        IntPredicate p1 = x -> x%3 == 0;
-        IntPredicate p2 = x -> x%5 == 0;
+        var map = new LinkedHashMap<>(Map.of(3, "Fizz", 5, "Buzz", 6, "Bazz"));
 
-        for(int i=0;i<100;i++){
-            StringBuilder builder = new StringBuilder();
-            if(p1.test(i)) builder.append("Fizz");
-            if(p2.test(i)) builder.append("Buzz");
-            System.out.println(builder.isEmpty() ? i : builder.toString());
-        }
+        System.out.println(IntStream.range(0, 100)
+                .mapToObj((i) -> map.entrySet().stream()
+                                .filter((entry) -> i % entry.getKey() == 0)
+                                .map(Map.Entry::getValue)
+                                .collect(Collectors.joining())
+                                .transform((s) -> s.isEmpty() ? String.valueOf(i) : s)
+                ).collect(Collectors.joining(" ", "[", "]")));
     }
 
     @Test
