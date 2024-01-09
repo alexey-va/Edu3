@@ -29,4 +29,16 @@ class LineTest {
         assertNotSame(line.getEnd(), clone.getEnd());
     }
 
+    @Test
+    void testHashCode(){
+        assertEquals(new Line(new Point(1,2), new Point(3,4)).hashCode(), new Line(new Point(1,2), new Point(3,4)).hashCode());
+        assertEquals(new Line(new Point(1,2), new Point(3,4)).hashCode(), new Line(new Point(3,4), new Point(1,2)).hashCode());
+        assertEquals(new Line(new Point(1,2), new Point(3,4)).hashCode(), new Line(new Point(1,2), new Point(3,4)).hashCode());
+        assertEquals(new Line(new Point(1,2), new Point(3,4)).hashCode(), new Line(new Point(1,2), new Point(3,4)).hashCode());
+        assertEquals(new Line(new Point(1,2), new Point(3,4)).hashCode(), new Line(new Point(1,2), new Point(3,4)).hashCode());
+        assertEquals(new Line(new Point(1,2), new Point(3,4)).hashCode(), new Line(new Point(1,2), new Point(3,4)).hashCode());
+        assertEquals(new Line(new Point(1,2), new Point(3,4)).hashCode(), new Line(new Point(1,2), new Point(3,4)).hashCode());
+        assertEquals(new Line(new Point(1,2), new Point(3,4)).hashCode(), new Line(new Point(1,2), new Point(3,4)).hashCode());
+    }
+
 }

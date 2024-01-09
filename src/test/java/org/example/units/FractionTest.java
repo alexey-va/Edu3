@@ -2,6 +2,8 @@ package org.example.units;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class FractionTest {
@@ -15,6 +17,19 @@ class FractionTest {
         assertEquals(new Fraction(1,2), new Fraction(2,4));
         assertEquals(new Fraction(1,2), new Fraction(2,4));
         assertEquals(new Fraction(1,2), new Fraction(2, 4));
+    }
+
+    @Test
+    void testHashCode(){
+        assertEquals(new Fraction(1,2).hashCode(), new Fraction(1,2).hashCode());
+        assertEquals(new Fraction(1,2).hashCode(), new Fraction(2,4).hashCode());
+        assertEquals(new Fraction(1,2).hashCode(), new Fraction(-1,-2).hashCode());
+        assertEquals(new Fraction(-1,2).hashCode(), new Fraction(1,-2).hashCode());
+        assertEquals(new Fraction(1,2).hashCode(), new Fraction(-2,-4).hashCode());
+        assertEquals(new Fraction(1,2).hashCode(), new Fraction(2,4).hashCode());
+        assertEquals(new Fraction(1,2).hashCode(), new Fraction(2,4).hashCode());
+        assertEquals(new Fraction(1,2).hashCode(), new Fraction(2, 4).hashCode());
+
     }
 
     @Test

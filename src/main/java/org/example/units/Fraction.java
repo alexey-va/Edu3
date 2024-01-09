@@ -100,6 +100,13 @@ public class Fraction extends Number implements Cloneable{
     }
 
     @Override
+    public int hashCode() {
+        int result = up;
+        result = 31 * result + down;
+        return result;
+    }
+
+    @Override
     public Fraction clone() {
         try {
             return (Fraction) super.clone();
