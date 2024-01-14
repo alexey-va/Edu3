@@ -10,6 +10,13 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.ref.PhantomReference;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.function.IntPredicate;
@@ -20,10 +27,33 @@ import java.util.stream.IntStream;
 @Log4j2
 class MainTest {
 
+    @Test
+    void myTest(){
+        IntStream.range(-100, 1000)
+                .filter(i -> i%3 == 0)
+                .filter(i -> i%5 != 0)
+                .filter(i -> digitSum(i) < 10)
+                .forEach(System.out::println);
+    }
+
+    static int digitSum(int x){
+        x = Math.abs(x);
+        int res = 0;
+        while (x > 0){
+            res+=x%10;
+            x/=10;
+        }
+        return res;
+    }
+
+
 
     @Test
     void fizzBuzz(){
-        var map = new LinkedHashMap<>(Map.of(3, "Fizz", 5, "Buzz", 6, "Bazz"));
+        var map = new LinkedHashMap<>(Map.of(
+                3, "Fizz",
+                5, "Buzz",
+                6, "Bazz"));
 
         System.out.println(IntStream.range(0, 100)
                 .mapToObj((i) -> map.entrySet().stream()

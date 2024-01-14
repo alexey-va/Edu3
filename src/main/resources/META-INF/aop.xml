@@ -1,0 +1,5 @@
+<aspectj>
+    <aspects>
+        <aspect name="org.example.other.concur.collections.CacheableAspect"/>
+    </aspects>
+</aspectj>

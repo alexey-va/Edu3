@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Getter
-public class Student {
+public class Student implements Comparable<Student> {
 
     private String name;
     private List<Integer> grades;
@@ -49,4 +49,8 @@ public class Student {
         return grades.stream().allMatch(i -> i==5);
     }
 
+    @Override
+    public int compareTo(Student o) {
+        return Double.compare(this.average(), o.average());
+    }
 }

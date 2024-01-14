@@ -231,7 +231,7 @@ public class Tetris implements Initializable {
         int yEnd = maxY * blockWidth;
         int xStart = block.x * blockWidth;
         int xEnd = (block.x + block.grid[0].length) * blockWidth;
-        Color projectionColor = block.color.deriveColor(0.0, 1.0, 1.5, 0.5);
+        Color projectionColor = block.color.deriveColor(0.0, 1.0, 1.5, 0.25);
 
         //gc.fillRect(xStart, yStart, xEnd - xStart, 1);
         //gc.fillRect(xStart, yEnd, xEnd - xStart, 1);

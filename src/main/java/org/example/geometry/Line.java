@@ -7,18 +7,24 @@ import java.util.Objects;
 
 @Builder
 @Data
-public class Line implements Measurable, Cloneable{
+public class Line <T extends Point> implements Measurable, Cloneable{
 
-    private Point start, end;
+    private T start, end;
 
-    public Line(Point point1, Point point2){
-        this(point1.x, point1.y, point2.x, point2.y);
+    public Line(T point1, T point2){
+        this.start = clonePoint(point1);
+        this.end = clonePoint(point2);
     }
 
-    public Line(double x1, double y1, double x2, double y2){
-        this.start = new Point(x1, y1);
-        this.end = new Point(x2, y2);
+    private T clonePoint(T point) {
+        try {
+            return (T) point.clone();
+        } catch (Exception e) {
+            throw new RuntimeException("Clone not supported for Point", e);
+        }
     }
+
+
 
     public Point getEnd(){
         return new Point(end.x, end.y);
@@ -77,4 +83,5 @@ public class Line implements Measurable, Cloneable{
             throw new AssertionError();
         }
     }
+
 }

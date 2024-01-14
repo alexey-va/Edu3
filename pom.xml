@@ -122,6 +122,17 @@
       <version>3.0.0-alpha1</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-core</artifactId>
+      <version>1.36</version> <!-- Use the latest version available -->
+    </dependency>
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-generator-annprocess</artifactId>
+      <version>1.36</version> <!-- Use the latest version available -->
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 <build>
   <plugins>
@@ -131,6 +142,24 @@
       <version>0.0.8</version>
       <configuration>
         <mainClass>org.example.other.javafx.Javafx</mainClass>
+      </configuration>
+    </plugin>
+
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <configuration>
+        <source>21</source>
+        <target>21</target>
+      </configuration>
+    </plugin>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <version>3.1.2</version> <!-- Use the latest version -->
+      <configuration>
+        <skipTests>true</skipTests>
+        <forkCount>0</forkCount>
       </configuration>
     </plugin>
   </plugins>

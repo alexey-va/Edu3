@@ -41,4 +41,20 @@ class LineTest {
         assertEquals(new Line(new Point(1,2), new Point(3,4)).hashCode(), new Line(new Point(1,2), new Point(3,4)).hashCode());
     }
 
+    @Test
+    void testGeneric(){
+        Line<Point> line = new Line<>(new Point(1,2), new Point(3,4));
+        System.out.println(line);
+        line.setEnd(new Point(5,6));
+        System.out.println(line);
+    }
+
+    @Test
+    void test3D(){
+        Line<Point3D> line = new Line<>(new Point3D(1,2,3), new Point3D(4,5,6));
+        System.out.println(line);
+        line.setEnd(new Point3D(7,8,9));
+        System.out.println(line);
+    }
+
 }

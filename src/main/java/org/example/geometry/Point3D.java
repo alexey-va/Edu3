@@ -2,7 +2,7 @@ package org.example.geometry;
 
 import org.example.geometry.Point;
 
-class Point3D extends Point {
+public class Point3D extends Point {
 
     double z;
 

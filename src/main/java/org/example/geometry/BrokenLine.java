@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class BrokenLine implements Measurable {
+public class BrokenLine implements Measurable, Cloneable {
 
     private List<Point> points;
 
@@ -37,4 +37,5 @@ public class BrokenLine implements Measurable {
                 .map(Point::toString)
                 .collect(Collectors.joining(",", "Line [", "]"));
     }
+
 }
