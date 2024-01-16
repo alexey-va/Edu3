@@ -6,10 +6,7 @@ import org.example.geometry.Point;
 import org.example.geometry.Point3D;
 
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -21,7 +18,7 @@ public class Util {
         line.setStart(start);
     }
 
-    public static <T extends Number> OptionalDouble max(Collection<MyOptional<T>> optionals){
+    public static OptionalDouble max(Collection<MyOptional<? extends Number>> optionals){
         return optionals.stream()
                 .filter(MyOptional::isPresent)
                 .map(MyOptional::getOrThrow)
@@ -46,8 +43,11 @@ public class Util {
         return collection;
     }
 
-    public static <T> T transform(Collection<T> collection, Function<Collection<T>, T> reducer){
-        return reducer.apply(collection);
+    public static <T> T reduce(Collection<T> collection, T identity, BiFunction<T, T, T> reducer){
+        for(T t : collection){
+            identity = reducer.apply(identity, t);
+        }
+        return identity;
     }
 
     public static <T> List<T> trim(Collection<T> collection, Predicate<T> predicate){
