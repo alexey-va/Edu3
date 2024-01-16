@@ -88,7 +88,7 @@ public class JsonParser {
         }
     }
 
-    private static List<Object> parseArray(String s){
+    public static List<Object> parseArray(String s){
         List<Object> result = new ArrayList<>();
 
         s = s.trim();

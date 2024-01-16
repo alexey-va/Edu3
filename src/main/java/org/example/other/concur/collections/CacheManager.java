@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Supplier;
 
 public class CacheManager {
 
@@ -48,6 +49,19 @@ public class CacheManager {
         Cache c = cacheMap.get(cache);
         if(c == null) throw new IllegalArgumentException("No cache "+cache+" found!");
         return (T) c.get(id);
+    }
+
+    public <T> T getOrElse(String cache, String id, Supplier<T> defaultValue){
+        Cache c = cacheMap.get(cache);
+        if(c == null) throw new IllegalArgumentException("No cache "+cache+" found!");
+        Object o = c.get(id);
+        //System.out.println("o = " + o);
+        if(o == null){
+            T t = defaultValue.get();
+            c.put(id, t);
+            return t;
+        }
+        return (T) o;
     }
 
     public void createCache(String name, long ttl){

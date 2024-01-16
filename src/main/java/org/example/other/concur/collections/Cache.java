@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.Map;
 import java.util.Objects;
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 @Builder
 @AllArgsConstructor
+@Log4j2
 public class Cache {
 
     @Builder.Default
@@ -37,7 +39,12 @@ public class Cache {
 
     void put(String name, Object o){
         Future<?> removeTask = null;
-        if(preciseTtl) removeTask = service.schedule(() -> cache.remove(name), ttl, TimeUnit.MILLISECONDS);
+        //System.out.println("ttl = " + ttl);
+        //System.out.println("preciseTtl = " + preciseTtl);
+        if(preciseTtl) removeTask = service.schedule(() -> {
+            cache.remove(name);
+            System.out.println("Removed "+name+" from cache "+this.name);
+        }, ttl, TimeUnit.MILLISECONDS);
         cache.put(name, new CacheEntry(System.currentTimeMillis(), o, removeTask));
     }
 
@@ -61,7 +68,7 @@ public class Cache {
     }
 
     private void initCleanupTask(){
-        cleanupTask = service.scheduleAtFixedRate(this::clean, 1000L, 1000L, TimeUnit.MILLISECONDS);
+        //cleanupTask = service.scheduleAtFixedRate(this::clean, 1000L, 1000L, TimeUnit.MILLISECONDS);
     }
 
     void cancelCleanupTask(){
@@ -69,12 +76,12 @@ public class Cache {
     }
 
     private void clean(){
-        cache.entrySet().removeIf(e -> e.getValue().timestamp - System.currentTimeMillis() >= ttl);
+        cache.entrySet().removeIf(e -> System.currentTimeMillis() - e.getValue().timestamp >= ttl);
     }
 
     @Getter @AllArgsConstructor
     static class CacheEntry{
-        long timestamp;
+        long timestamp = System.currentTimeMillis();
         Object value;
         Future<?> removeTask;
     }
