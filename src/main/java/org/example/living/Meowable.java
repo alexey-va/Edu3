@@ -2,7 +2,7 @@ package org.example.living;
 
 public interface Meowable {
 
-    default public void meow() {
+    default void meow() {
         System.out.println("meow");
     }
 

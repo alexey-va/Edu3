@@ -2,17 +2,30 @@ package org.example.entrypoints;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.implementation.FixedValue;
+import net.bytebuddy.implementation.MethodDelegation;
+import net.bytebuddy.implementation.bind.annotation.AllArguments;
+import net.bytebuddy.implementation.bind.annotation.Origin;
+import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import net.bytebuddy.matcher.ElementMatchers;
 import org.example.living.Bird;
+import org.example.living.Cat;
 import org.example.living.Meowable;
 import org.example.geometry.*;
+import org.example.other.events.base.EventManager;
+import org.example.other.network.webserver.WebServer;
+import org.example.other.test.*;
 
 import static java.lang.Math.*;
 
 import java.lang.Double;
+import java.lang.reflect.*;
 import java.util.*;
-import java.util.concurrent.Callable;
+import java.util.concurrent.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -21,13 +34,27 @@ import java.util.stream.Collectors;
 
 @Log4j2
 public class Main {
-    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException, InterruptedException {
-        var res = SumResult.ofNullable(null);
+    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException, InterruptedException, ExecutionException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+        WebServer webServer = new WebServer(9090);
+        RequestManager.reqProducer = new MessageProducer("request");
+        RequestManager.reqProducer.init();
+        RequestManager.initCleanTask();
 
-        //System.out.println(res.getOrDefault(Main::getInteger));
+        MessageProducer responseProducer = new MessageProducer("response");
+        responseProducer.init();
+        ReqListener reqListener = new ReqListener(responseProducer);
+        EventManager.getInstance().registerListener(reqListener);
 
+        RespListener respListener = new RespListener();
+        EventManager.getInstance().registerListener(respListener);
 
+        MessageConsumer consumer = new MessageConsumer("request");
+        consumer.init();
+        MessageConsumer consumer1 = new MessageConsumer("response");
+        consumer1.init();
     }
+
+
 
 
 

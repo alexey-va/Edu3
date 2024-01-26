@@ -53,6 +53,7 @@ public class JsonParser {
 
             for (int i = 0; i < s.length(); i++) {
                 char c = s.charAt(i);
+                if(Character.isSpaceChar(c) || c < 20) continue;
                 if (!keyIsParsed) {
                     if (c == '\"' && key == null) key = new StringBuilder();
                     else if (key != null && c != '\"') key.append(c);
@@ -66,7 +67,7 @@ public class JsonParser {
                     lookingForValue = false;
                     key = null;
                     val = null;
-                } else if (!Character.isSpaceChar(c) && c != '\n') {
+                } else {
                     int end = findConnectedToken(s, i);
                     if (c == '\"') {
                         val = s.substring(i + 1, end);
@@ -102,12 +103,13 @@ public class JsonParser {
 
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
+            if(Character.isSpaceChar(c) || c < 20) continue;
 
             if(val != null && c == ','){
                 result.add(val);
                 val = null;
             }
-            else if(!Character.isSpaceChar(c) && c != '\n'){
+            else{
                 int end = findConnectedToken(s, i);
                 if(c == '\"'){
                     val = s.substring(i+1, end);
@@ -140,6 +142,7 @@ public class JsonParser {
             int pointer = start;
             while (pointer < s.length()){
                 char c = s.charAt(pointer);
+                //System.out.println("Num char: "+c+" "+(int)c);
                 if(!Character.isDigit(c) && c != '-' && c != '.') break;
                 pointer++;
             }

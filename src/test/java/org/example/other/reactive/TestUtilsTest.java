@@ -2,11 +2,11 @@ package org.example.other.reactive;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class TestUtilsTest {
     @Test
-    void test1(){
+    void test1() throws InterruptedException {
         TestUtils.test1();
+        Thread.sleep(2000);
     }
+
 }

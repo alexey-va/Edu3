@@ -1,30 +1,17 @@
 package org.example.other.reactive;
 
-import com.thedeanda.lorem.LoremIpsum;
-import rx.Observable;
-import rx.Observer;
-import rx.observables.ConnectableObservable;
-import rx.schedulers.Schedulers;
-
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.FutureTask;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class TestUtils {
-
-    public static void test1() {
-        Observable.create((emitter) -> {
-                    System.out.println("Emitter thread: " + Thread.currentThread().getName());
-                    emitter.onNext(1);
-                    emitter.onNext(2);
-                    emitter.onNext(3);
-                    emitter.onNext(4);
-                }).subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.computation())
-                .subscribe((r) -> {
-                    System.out.println("Thread: " + Thread.currentThread().getName());
-                    System.out.println("Data: " + r);
-                });
+    public static void test1() throws InterruptedException {
 
     }
-
 }

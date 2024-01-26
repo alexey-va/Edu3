@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.example.Logged;
 import org.example.geometry.*;
 import org.example.living.*;
+import org.example.other.network.JsonParser;
 import org.example.units.Fraction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,13 +28,13 @@ import java.util.stream.IntStream;
 @Log4j2
 class MainTest {
 
+
     @Test
     void myTest(){
-        IntStream.range(-100, 1000)
-                .filter(i -> i%3 == 0)
-                .filter(i -> i%5 != 0)
-                .filter(i -> digitSum(i) < 10)
-                .forEach(System.out::println);
+        String s = "{\"number\":    123   ," +
+                "\"kek\": \"2323  aaa\"}";
+        Map<String, Object> data = JsonParser.parse(s);
+        System.out.println(data.get("kek"));
     }
 
     static int digitSum(int x){
