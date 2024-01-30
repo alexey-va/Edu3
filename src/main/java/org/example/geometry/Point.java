@@ -8,17 +8,24 @@ import java.text.DecimalFormatSymbols;
 
 @Data
 @AllArgsConstructor
-public class Point implements Cloneable {
+public class Point implements Cloneable, Moveable {
 
+    double x, y;
     private static final DecimalFormat format = new DecimalFormat("##.#") {{
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
         setDecimalFormatSymbols(symbols);
     }};
-    double x, y;
+
 
     public double distanceTo(Point point) {
         return Math.sqrt((this.x - point.x) * (this.x - point.x) + (this.y - point.y) * (this.y - point.y));
+    }
+
+    @Override
+    public void shift(Shift shift) {
+        x+=shift.axis(0);
+        y+=shift.axis(1);
     }
 
     @Override
@@ -31,16 +38,16 @@ public class Point implements Cloneable {
 
     @Override
     public boolean equals(Object o) {
-        if(o == null) return false;
-        if(o == this) return true;
-        if(o.getClass() != this.getClass()) return false;
+        if (o == null) return false;
+        if (o == this) return true;
+        if (o.getClass() != this.getClass()) return false;
         return Math.abs(this.x - ((Point) o).x) < 1e-14
                 && Math.abs(this.y - ((Point) o).y) < 1e-14;
     }
 
     @Override
     public int hashCode() {
-        return Double.hashCode(x)*31 + Double.hashCode(y);
+        return Double.hashCode(x) * 31 + Double.hashCode(y);
     }
 
     @Override
@@ -51,6 +58,7 @@ public class Point implements Cloneable {
             throw new RuntimeException(e);
         }
     }
+
 
 
 }

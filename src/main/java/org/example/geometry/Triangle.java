@@ -4,7 +4,6 @@ import lombok.ToString;
 
 import java.util.List;
 
-@ToString
 public class Triangle extends Figure implements Chainable {
     public Triangle(Point p1, Point p2, Point p3) {
         super.getPoints().addAll(List.of(p1, p2, p3));
@@ -32,5 +31,10 @@ public class Triangle extends Figure implements Chainable {
                 new Point(p2.getX(), p2.getY()),
                 new Point(p3.getX(), p3.getY())
         );
+    }
+
+    @Override
+    public String toString() {
+        return "Triangle{" +getPoints()+ "}";
     }
 }

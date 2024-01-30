@@ -13,8 +13,6 @@ public class Rectangle extends Figure implements Chainable {
         this.b = b;
     }
 
-    protected Rectangle() {
-    }
 
 
     @Override
@@ -31,5 +29,13 @@ public class Rectangle extends Figure implements Chainable {
                 new Point(leftUpperCorner.x + a, leftUpperCorner.y - b),
                 new Point(leftUpperCorner.x, leftUpperCorner.y - b)
         );
+    }
+
+    @Override
+    public String toString() {
+        return "Rectangle{" +
+                "a=" + a +
+                ", b=" + b +", "+getPoints().getFirst()+
+                '}';
     }
 }

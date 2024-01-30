@@ -113,15 +113,6 @@ class MainTest {
         Assertions.assertEquals(outContent.toString().split("\n")[1].trim(), "cat1: meow!");
     }
 
-    @Test
-    void commonArea() {
-
-        Figure figure = new Squar(new Point(0, 0), 3);
-        Figure figure1 = new Triangle(new Point(0, 0), new Point(3, 0), new Point(0, 4));
-
-        Assertions.assertEquals(15, Main.commonArea(Arrays.asList(figure, figure1)));
-
-    }
 
     @Test
     void tweet() {

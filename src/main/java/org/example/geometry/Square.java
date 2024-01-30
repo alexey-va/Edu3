@@ -4,14 +4,13 @@ import lombok.Getter;
 
 public class Square extends Figure implements Chainable{
 
-    Point leftUpperCorner;
     @Getter
     double side;
 
 
     public Square(Point point, double side){
         if(side <0) throw new IllegalArgumentException("side < 0");
-        this.leftUpperCorner = point;
+        getPoints().add(point);
         this.side=side;
     }
     public Square(double x, double y, double side){
@@ -21,10 +20,10 @@ public class Square extends Figure implements Chainable{
 
     public BrokenLine toLine(){
         return new LoopedBrokenLine(
-                new Point(leftUpperCorner.x, leftUpperCorner.y),
-                new Point(leftUpperCorner.x+side, leftUpperCorner.y),
-                new Point(leftUpperCorner.x+side, leftUpperCorner.y-side),
-                new Point(leftUpperCorner.x, leftUpperCorner.y-side)
+                new Point(point().x, point().y),
+                new Point(point().x+side, point().y),
+                new Point(point().x+side, point().y-side),
+                new Point(point().x, point().y-side)
         );
     }
 
@@ -33,10 +32,14 @@ public class Square extends Figure implements Chainable{
         this.side = side;
     }
 
+    private Point point(){
+        return getPoints().getFirst();
+    }
+
     @Override
     public String toString() {
         return "Square{" +
-                "leftUpperCorner=" + leftUpperCorner +
+                "leftUpperCorner=" + point() +
                 ", side=" + side +
                 '}';
     }

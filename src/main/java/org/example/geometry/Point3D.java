@@ -15,6 +15,12 @@ public class Point3D extends Point {
         this(x, y, 0);
     }
 
+    @Override
+    public void shift(Shift shift){
+        super.shift(shift);
+        z+=shift.axis(2);
+    }
+
 
     @Override
     public String toString() {

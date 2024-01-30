@@ -2,23 +2,25 @@ package org.example.generics;
 
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.Stream;
 
 public class Starter {
 
     public static void main(String[] args) throws Exception {
-        var list = List.of(1,2,3,4,5);
-        System.out.println(DataStream.of(1, 2, 3, 4, 5)
-                .filter(x -> x > 2)
-                .map(x -> x * 2)
-                .reduce((a, b) -> a + b, 0));
+        System.out.println(DataStream.of("Asd", "asd", "dsd", "DDD")
+                .filter(s -> !s.isEmpty())
+                .filter(s -> Character.isUpperCase(s.charAt(0)))
+                .map(String::length)
+                .reduce(Integer::sum, 0));
 
-        var list2 = DataStream.of(1,2,3,4,5)
-                .filter(x -> x>3)
-                .map(x -> x*3)
-                .map(x -> x+"a")
-                .collect(ArrayList::new,ArrayList::add);
-        System.out.println(list2);
+        System.out.println(DataStream.of(0, 0, 1, 2, -1, -2)
+                .filter(i -> i != 0)
+                .collect(() -> List.of(new ArrayList<>(), new ArrayList<>()),
+                        (list, element) -> list.get(element > 0 ? 1 : 0).add(element)));
+
+        System.out.println(DataStream.of("asd", "asd1", "1234", "423455")
+                .filter(s -> s.matches("^-?\\d+(\\.\\d+)?$"))
+                .map(Double::parseDouble)
+                .reduce(Double::sum, 0.0));
     }
 }
 
@@ -45,6 +47,12 @@ class DataStream<T> {
         Collections.addAll(list, args);
         return new DataStream<>(list);
     }
+    public static <T> DataStream<T> of(Collection<T> collection) {
+        List<T> list = new ArrayList<>();
+        list.addAll(collection);
+        return new DataStream<>(list);
+    }
+
 
     public <R> DataStream<R> map(Function<T, R> function) {
         actions.add(MapAction.of(function));
@@ -52,7 +60,7 @@ class DataStream<T> {
     }
 
     public DataStream<T> filter(Predicate<T> rule) {
-        actions.add(PredicateAction.of(rule));
+        actions.add(FilterAction.of(rule));
         return this;
     }
 
@@ -85,46 +93,46 @@ class DataStream<T> {
                 }
                 temp= o.get();
             }
-            if(pass) start = operator.apply(start, (T)t);
+            if(pass) start = operator.apply(start, (T)temp);
         }
         return start;
     }
 }
 
-interface Action<T, R> {
-    Optional<R> apply(T t);
+interface Action {
+    Optional apply(Object t);
 }
 
 
-class PredicateAction<T> implements Action<T, T> {
-    Predicate<T> check;
+class FilterAction implements Action {
+    Predicate check;
 
-    private PredicateAction(Predicate<T> predicate) {
+    private FilterAction(Predicate predicate) {
         this.check = predicate;
     }
 
-    public static <T> PredicateAction<T> of(Predicate<T> predicate) {
-        return new PredicateAction<>(predicate);
+    public static FilterAction of(Predicate predicate) {
+        return new FilterAction(predicate);
     }
 
-    public Optional<T> apply(T t) {
+    public Optional apply(Object t) {
         if (check.test(t)) return Optional.ofNullable(t);
         return Optional.empty();
     }
 }
 
-class MapAction<T, R> implements Action<T, R> {
-    Function<T, R> function;
+class MapAction implements Action {
+    Function function;
 
-    private MapAction(Function<T, R> function) {
+    private MapAction(Function function) {
         this.function = function;
     }
 
-    public static <T, R> MapAction<T, R> of(Function<T, R> function) {
-        return new MapAction<>(function);
+    public static MapAction of(Function function) {
+        return new MapAction(function);
     }
 
-    public Optional<R> apply(T t) {
+    public Optional apply(Object t) {
         return Optional.ofNullable(function.apply(t));
     }
 }
