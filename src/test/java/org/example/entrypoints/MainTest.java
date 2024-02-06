@@ -31,10 +31,13 @@ class MainTest {
 
     @Test
     void myTest(){
-        String s = "{\"number\":    123   ," +
-                "\"kek\": \"2323  aaa\"}";
-        Map<String, Object> data = JsonParser.parse(s);
-        System.out.println(data.get("kek"));
+        Map<Integer,List<Long>> map = new HashMap<>();
+        map.put(1, List.of(1L, 2L, 3L));
+        map.put(2, List.of(4L,5L));
+        record Tuple(Long l, Integer i){}
+        var res = map.entrySet().stream()
+                .collect(HashMap::new, (mp, e) -> e.getValue().forEach(v -> mp.put(v, e.getKey())), HashMap::putAll);
+        System.out.println(res);
     }
 
     static int digitSum(int x){
