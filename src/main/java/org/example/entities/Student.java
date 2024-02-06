@@ -60,7 +60,7 @@ public class Student implements Comparable<Student> {
     }
 
     public Save save(){
-        return new Save(stateChanges.isEmpty() ? null : stateChanges.getLast().uuid, this);
+        return new Save(stateChanges.isEmpty() ? null : stateChanges.getLast(), this);
     }
 
     public double average(){
@@ -83,14 +83,14 @@ public class Student implements Comparable<Student> {
 
     @RequiredArgsConstructor
     public static class Save{
-        private final UUID targetStateUuid;
+        private final StateChange targetStateChange;
         private final Student student;
 
         public void undo(){
-            if(targetStateUuid == null){
+            if(targetStateChange == null){
                 while (!student.stateChanges.isEmpty()) student.undo();
             } else{
-                while (student.stateChanges.getLast().uuid != targetStateUuid) student.undo();
+                while (student.stateChanges.getLast() != targetStateChange) student.undo();
             }
         }
     }
@@ -102,8 +102,6 @@ public class Student implements Comparable<Student> {
 
         private final List<GradeChange> gradeChanges;
         private final String oldName;
-
-        UUID uuid = UUID.randomUUID();
 
         public void undo(Student student){
             if(oldName != null) student.name = oldName;

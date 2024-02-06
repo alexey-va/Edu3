@@ -11,9 +11,10 @@ class StudentTest {
         Student student = new Student("Vasia");
 
         student.setName("Petya");
-        Student.Save save = student.save();
+
 
         student.addGrades(2);
+        Student.Save save = student.save();
         student.addGrades(3,3,3);
         System.out.println(student);
 
