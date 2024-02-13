@@ -9,17 +9,20 @@ class StudentTest {
     @Test
     void testStudentUndo(){
         Student student = new Student("Vasia");
-
+        Student.Save save = student.save();
         student.setName("Petya");
 
 
+
         student.addGrades(2);
-        Student.Save save = student.save();
         student.addGrades(3,3,3);
+        student.removeGrade(3);
         System.out.println(student);
 
-        save.undo();
+        System.out.println(save.fromSave());
         System.out.println(student);
+
+
     }
 
 }

@@ -1,6 +1,7 @@
 package org.example.entities;
 
 import lombok.*;
+import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,60 +20,58 @@ public class Student implements Comparable<Student> {
     @ToString.Exclude
     private List<StateChange> stateChanges = new ArrayList<>();
 
-    public Student(String name, int... grades){
+    public Student(String name, int... grades) {
         this.name = name;
         addGrades(grades);
     }
 
-    public Student(Student student){
+    public Student(Student student) {
         this.name = student.getName();
         this.grades = new ArrayList<>(student.getGrades());
     }
 
-    public void removeGrade(int index){
-        List<StateChange.GradeChange> gradeChanges = new ArrayList<>();
+    public void removeGrade(int index) {
         Integer a = grades.remove(index);
-        gradeChanges.add(new StateChange.GradeChange(false, a, index));
-
-        stateChanges.add(new StateChange(gradeChanges, null));
+        stateChanges.add(StateChange.ofGrade(false, a, index));
     }
 
-    public void addGrades(int... grades){
-        List<StateChange.GradeChange> gradeChanges = new ArrayList<>();
-        for(int gr : grades){
-            if(gr<2 || gr > 5) throw new IllegalArgumentException("Grade is not in range! "+gr);
+    public void addGrades(int... grades) {
+        StateChange stateChange = StateChange.empty();
+        for (int gr : grades) {
+            if (gr < 2 || gr > 5) throw new IllegalArgumentException("Grade is not in range! " + gr);
             this.grades.add(gr);
-            gradeChanges.add(new StateChange.GradeChange(true, 0, 0));
+
+            stateChange.add(AtomicGradeChange.added());
         }
 
-        stateChanges.add(new StateChange(gradeChanges, null));
+        stateChanges.add(stateChange);
     }
 
-    public void setName(String name){
-        stateChanges.add(new StateChange(null, this.name));
+    public void setName(String name) {
+        stateChanges.add(StateChange.ofName(this.name));
         this.name = name;
     }
 
-    public void undo(){
-        if(stateChanges.isEmpty()) return;
+    public void undo() {
+        if (stateChanges.isEmpty()) return;
         StateChange stateChange = stateChanges.removeLast();
         stateChange.undo(this);
     }
 
-    public Save save(){
-        return new Save(stateChanges.isEmpty() ? null : stateChanges.getLast(), this);
+    public Save save() {
+        return new Student.Save(stateChanges.isEmpty() ? null : stateChanges.getLast());
     }
 
-    public double average(){
+    public double average() {
         return grades.stream()
                 .mapToInt(Integer::intValue)
                 .average()
                 .orElse(0);
     }
 
-    public boolean isCool(){
-        if(grades.isEmpty()) return false;
-        return grades.stream().allMatch(i -> i==5);
+    public boolean isCool() {
+        if (grades.isEmpty()) return false;
+        return grades.stream().allMatch(i -> i == 5);
     }
 
     @Override
@@ -82,37 +81,88 @@ public class Student implements Comparable<Student> {
 
 
     @RequiredArgsConstructor
-    public static class Save{
+    public class Save {
         private final StateChange targetStateChange;
-        private final Student student;
 
-        public void undo(){
-            if(targetStateChange == null){
+        public void restore() {
+            if (targetStateChange == null) {
+                while (!Student.this.stateChanges.isEmpty()) Student.this.undo();
+            } else {
+                while (Student.this.stateChanges.getLast() != targetStateChange) Student.this.undo();
+            }
+        }
+
+        @Contract(pure = true, value = " -> new")
+        public Student fromSave(){
+            Student student = new Student(Student.this);
+            student.stateChanges=new ArrayList<>(Student.this.stateChanges);
+            if (targetStateChange == null) {
                 while (!student.stateChanges.isEmpty()) student.undo();
-            } else{
+            } else {
                 while (student.stateChanges.getLast() != targetStateChange) student.undo();
             }
+            return student;
         }
     }
 
-    @RequiredArgsConstructor
+    // Combination of multiple atomic changes
     @ToString
-    static class StateChange{
-        record GradeChange(boolean added, int data, int index){}
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    static class StateChange {
+        private final List<AtomicStateChange> atomicChanges = new ArrayList<>();
 
-        private final List<GradeChange> gradeChanges;
-        private final String oldName;
+        public void undo(Student student) {
+            atomicChanges.forEach(asc -> asc.undo(student));
+        }
 
-        public void undo(Student student){
-            if(oldName != null) student.name = oldName;
-            if(gradeChanges != null){
-                for(GradeChange change : gradeChanges){
-                    if(change.added) student.getGrades().removeLast();
-                    else {
-                        student.getGrades().add(change.data, change.index);
-                    }
-                }
-            }
+        public void add(AtomicStateChange change){
+            this.atomicChanges.add(change);
+        }
+
+        // Using lambda
+        public static StateChange ofName(String oldName) {
+            StateChange stateChange = new StateChange();
+            stateChange.atomicChanges.add(student -> student.name = oldName);
+            return stateChange;
+        }
+
+        // Using concrete class
+        public static StateChange ofGrade(boolean add, int grade, int index) {
+            StateChange stateChange = new StateChange();
+            if (!add) stateChange.atomicChanges.add(AtomicGradeChange.removed(grade, index));
+            else stateChange.atomicChanges.add(AtomicGradeChange.added());
+            return stateChange;
+        }
+
+        public static StateChange empty() {
+            return new StateChange();
+        }
+
+    }
+
+    interface AtomicStateChange {
+        void undo(Student student);
+    }
+
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    @ToString
+    static class AtomicGradeChange implements AtomicStateChange {
+        private final boolean gradeAdded; // if false - grade was removed
+        private final int grade;
+        private final int index;
+
+        @Override
+        public void undo(Student student) {
+            if (gradeAdded) student.grades.removeLast();
+            else student.grades.add(index, grade);
+        }
+
+        public static AtomicGradeChange removed(int grade, int index) {
+            return new AtomicGradeChange(false, grade, index);
+        }
+
+        public static AtomicGradeChange added() {
+            return new AtomicGradeChange(true, 0, 0);
         }
     }
 }
