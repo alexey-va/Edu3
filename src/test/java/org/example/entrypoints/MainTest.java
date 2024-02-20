@@ -1,5 +1,10 @@
 package org.example.entrypoints;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.thedeanda.lorem.LoremIpsum;
+import javafx.scene.shape.Polyline;
 import lombok.extern.log4j.Log4j2;
 import org.example.Logged;
 import org.example.geometry.*;
@@ -8,9 +13,11 @@ import org.example.other.network.JsonParser;
 import org.example.units.Fraction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import rx.Observable;
+import rx.Scheduler;
+import rx.schedulers.Schedulers;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -19,10 +26,24 @@ import java.lang.ref.PhantomReference;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Logged
 @Log4j2
@@ -30,30 +51,69 @@ class MainTest {
 
 
     @Test
-    void myTest(){
-        Map<Integer,List<Long>> map = new HashMap<>();
-        map.put(1, List.of(1L, 2L, 3L));
-        map.put(2, List.of(4L,5L));
-        record Tuple(Long l, Integer i){}
-        var res = map.entrySet().stream()
-                .collect(HashMap::new, (mp, e) -> e.getValue().forEach(v -> mp.put(v, e.getKey())), HashMap::putAll);
-        System.out.println(res);
-    }
-
-    static int digitSum(int x){
-        x = Math.abs(x);
-        int res = 0;
-        while (x > 0){
-            res+=x%10;
-            x/=10;
+    void test1() throws Exception {
+        List<Point> points = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            points.add(new Point(
+                    ThreadLocalRandom.current().nextInt(-100, 100),
+                    ThreadLocalRandom.current().nextInt(-100, 1)
+            ));
         }
-        return res;
+
+        BrokenLine brokenLine = new BrokenLine(points.stream()
+                .distinct()
+                .sorted(Comparator.comparingDouble(Point::getX))
+                //.map(p -> new Point(p.getX(), Math.abs(p.getY())))
+                //.peek(p -> p.setY(Math.abs(p.getY())))
+                .map(p -> p.getY() < 0 ? new Point(p.getX(), -p.getY()) : p)
+                .toArray(Point[]::new));
+        System.out.println(brokenLine);
     }
 
+    @Test
+    void test2() throws Exception {
+
+        // create test sample and write it to file
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 1000; i++) {
+            builder.append(LoremIpsum.getInstance().getFirstName().toLowerCase());
+            if (ThreadLocalRandom.current().nextBoolean()) {
+                builder.append(":")
+                        .append(ThreadLocalRandom.current().nextInt(0, 20));
+            }
+            builder.append("\n");
+        }
+
+        Path path = Paths.get("test_file.txt");
+        Files.writeString(path, builder.toString(),
+                StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+
+        // read file to a map
+        try (var stream = Files.lines(path)) {
+            record NameData(String name, int id) {}
+            var map = stream
+                    .map(s -> Character.toUpperCase(s.charAt(0)) + s.substring(1).toLowerCase())
+                    .map(s -> s.split(":"))
+                    .filter(array -> array.length >= 2)
+                    .filter(array -> array[1].matches("^-?\\d+$"))
+                    .map(array -> new NameData(array[0], Integer.parseInt(array[1])))
+                    .collect(Collectors.groupingBy(
+                            NameData::id,
+                            Collectors.mapping(NameData::name, Collectors.toList())
+                    ));
+
+            // Print json with indentation
+            System.out.println(new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
+                    .writeValueAsString(map));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
     @Test
-    void fizzBuzz(){
+    void fizzBuzz() {
         var map = new LinkedHashMap<>(Map.of(
                 3, "Fizz",
                 5, "Buzz",
@@ -61,16 +121,16 @@ class MainTest {
 
         System.out.println(IntStream.range(0, 100)
                 .mapToObj((i) -> map.entrySet().stream()
-                                .filter((entry) -> i % entry.getKey() == 0)
-                                .map(Map.Entry::getValue)
-                                .collect(Collectors.joining())
-                                .transform((s) -> s.isEmpty() ? String.valueOf(i) : s)
+                        .filter((entry) -> i % entry.getKey() == 0)
+                        .map(Map.Entry::getValue)
+                        .collect(Collectors.joining())
+                        .transform((s) -> s.isEmpty() ? String.valueOf(i) : s)
                 ).collect(Collectors.joining(" ", "[", "]")));
     }
 
     @Test
     void testGetUnion() {
-        Chainable chainable1 = new Square(1,1,3);
+        Chainable chainable1 = new Square(1, 1, 3);
         Chainable chainable2 = new Triangle(new Point(0, 0), new Point(3, 0), new Point(0, 4));
 
         BrokenLine brokenLine = Main.getUnion(Arrays.asList(chainable1, chainable2));
@@ -79,7 +139,7 @@ class MainTest {
 
     @Test
     void printLengths() {
-        Measurable measurable = new Square(1,1,3).toLine();
+        Measurable measurable = new Square(1, 1, 3).toLine();
         Measurable measurable1 = new Line(new Point(0, 0), new Point(3, 0));
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -143,7 +203,7 @@ class MainTest {
     void addNumbers() {
 
         double res = Main.addNumbers(Arrays.asList(7,
-                new Fraction(11,3),
+                new Fraction(11, 3),
                 3.21,
                 new BigInteger("12345678912345678912")));
 
