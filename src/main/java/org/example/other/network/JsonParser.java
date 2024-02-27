@@ -7,12 +7,14 @@ import java.util.*;
 @Log4j2
 public class JsonParser {
 
-    public static String toJson(Map<String, Object> map){
+    public static String toJson(Map<String, ?> map){
         StringBuilder builder = new StringBuilder("{");
-        for(Map.Entry<String, Object> entry : map.entrySet()){
+        for(Map.Entry<String, ?> entry : map.entrySet()){
             builder.append("\"").append(entry.getKey()).append("\"").append(": ");
             if(entry.getValue() instanceof Collection<?> collection) builder.append(toJson(collection));
+            else if(entry.getValue() == null) builder.append("\"null\"");
             else if(entry.getValue() instanceof Map<?, ?> map1) builder.append(toJson((Map<String, Object>) map1));
+            else if(entry.getValue() instanceof Number) builder.append(entry.getValue());
             else builder.append("\"").append(entry.getValue().toString()).append("\"");
             builder.append(", ");
         }
@@ -71,17 +73,21 @@ public class JsonParser {
                     int end = findConnectedToken(s, i);
                     if (c == '\"') {
                         val = s.substring(i + 1, end);
+                        //System.out.println("val1: "+val);
                     } else if (isBracket(c)) {
                         if (c == '[') val = parseArray(s.substring(i, end + 1));
                         else val = parse(s.substring(i, end + 1));
+                        //System.out.println("val2: "+val);
                     } else {
                         String numString = s.substring(i, end + 1);
                         if (numString.contains(".")) val = Double.parseDouble(numString);
                         else val = Integer.parseInt(numString);
+                        //System.out.println("val3: "+val);
                     }
                     i = end;
                 }
             }
+            if("null".equals(val)) val = null;
             result.put(key.toString(), val);
             return result;
         } catch (Exception e){

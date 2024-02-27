@@ -1,33 +1,25 @@
 package org.example.entrypoints;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.*;
 import lombok.extern.log4j.Log4j2;
+import org.example.geometry.*;
 import org.example.living.Bird;
 import org.example.living.Meowable;
-import org.example.geometry.*;
 
-import static java.lang.Math.*;
+import java.util.Collection;
 
-import java.lang.Double;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import static java.lang.Math.pow;
+import static org.example.reflections.Utils.*;
 
 @Log4j2
 public class Main {
+    private static final int TIMEOUT_SECONDS = 5;
+
     public static void main(String[] args) throws Exception {
+        Test1 test1 = new Test1();
+        Test1 test11 = cache(test1);
+        test11.print();
 
     }
-
-
-
 
 
     public static BrokenLine getUnion(Collection<Chainable> chainables) {

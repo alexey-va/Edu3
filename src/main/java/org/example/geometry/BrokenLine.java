@@ -3,6 +3,7 @@ package org.example.geometry;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class BrokenLine implements Measurable, Cloneable {
 
-    private List<Point> points;
+    private List<Point> points = new ArrayList<>();
 
     public BrokenLine(Point... points) {
         this.points = Arrays.stream(points).collect(Collectors.toList());
@@ -38,4 +39,7 @@ public class BrokenLine implements Measurable, Cloneable {
                 .collect(Collectors.joining(",", "Line [", "]"));
     }
 
+    public void addAll(BrokenLine brokenLine) {
+        this.points.addAll(brokenLine.points);
+    }
 }

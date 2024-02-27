@@ -1,77 +1,44 @@
 package org.example.entrypoints;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.thedeanda.lorem.LoremIpsum;
-import javafx.scene.shape.Polyline;
 import lombok.extern.log4j.Log4j2;
 import org.example.Logged;
 import org.example.geometry.*;
 import org.example.living.*;
-import org.example.other.network.JsonParser;
 import org.example.units.Fraction;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import rx.Observable;
-import rx.Scheduler;
-import rx.schedulers.Schedulers;
 
-import java.io.*;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.ref.PhantomReference;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.math.BigInteger;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @Logged
 @Log4j2
 class MainTest {
 
+    private static List<Point> points;
 
-    @Test
-    void test1() throws Exception {
-        List<Point> points = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+    @BeforeAll
+    public static void setup() throws Exception{
+        points = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
             points.add(new Point(
                     ThreadLocalRandom.current().nextInt(-100, 100),
                     ThreadLocalRandom.current().nextInt(-100, 1)
             ));
         }
-
-        BrokenLine brokenLine = new BrokenLine(points.stream()
-                .distinct()
-                .sorted(Comparator.comparingDouble(Point::getX))
-                //.map(p -> new Point(p.getX(), Math.abs(p.getY())))
-                //.peek(p -> p.setY(Math.abs(p.getY())))
-                .map(p -> p.getY() < 0 ? new Point(p.getX(), -p.getY()) : p)
-                .toArray(Point[]::new));
-        System.out.println(brokenLine);
-    }
-
-    @Test
-    void test2() throws Exception {
 
         // create test sample and write it to file
         StringBuilder builder = new StringBuilder();
@@ -87,7 +54,21 @@ class MainTest {
         Path path = Paths.get("test_file.txt");
         Files.writeString(path, builder.toString(),
                 StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+    }
 
+    @Test
+    void test1() throws Exception {
+        BrokenLine brokenLine = points.stream()
+                .distinct()
+                .sorted(Comparator.comparingDouble(Point::getX))
+                .peek(p -> p.setY(Math.abs(p.getY())))
+                .collect(BrokenLine::new, BrokenLine::add, BrokenLine::addAll);
+        System.out.println(brokenLine);
+    }
+
+    @Test
+    void test2() throws Exception {
+        Path path = Paths.get("test_file.txt");
         // read file to a map
         try (var stream = Files.lines(path)) {
             record NameData(String name, int id) {}

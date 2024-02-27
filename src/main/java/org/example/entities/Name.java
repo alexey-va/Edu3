@@ -22,8 +22,8 @@ public class Name {
     public Name(String n1, String n2) {
         this(n1, n2, null);
     }
-    public Name(String n2) {
-        this(null, n2, null);
+    public Name(String n1) {
+        this(n1, null, null);
     }
 
 

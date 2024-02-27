@@ -3,6 +3,7 @@ package org.example.living;
 import lombok.*;
 import org.example.entities.Name;
 
+@NoArgsConstructor
 public class Person {
 
     @Getter
@@ -11,7 +12,7 @@ public class Person {
     @Setter
     private int height;
     @Getter
-    private final Person father;
+    private Person father;
 
 
 
