@@ -57,7 +57,6 @@ public class CacheInterceptor implements InvocationHandler {
             if (!Objects.equals(methodName, that.methodName)) return false;
             if (!Objects.equals(fieldContext, that.fieldContext))
                 return false;
-            // Probably incorrect - comparing Object[] arrays with Arrays.equals
             return Arrays.equals(args, that.args);
         }
 
