@@ -28,6 +28,19 @@ public class FileWriter {
         }
     }
 
+    @SneakyThrows
+    public void writeMap(Map<String, ?> map){
+        Map<String, Object> maps = new HashMap<>();
+        for(String key : map.keySet()){
+            maps.put(key, objectToMap(map.get(key)));
+        }
+        String json = JsonParser.toJson(maps);
+        if(!file.exists())file.createNewFile();
+        try(var writer = new BufferedWriter(new java.io.FileWriter(file))){
+            writer.write(json);
+        }
+    }
+
     private Map<String, Object> objectToMap(Object o) {
         return Arrays.stream(o.getClass().getDeclaredFields())
                 .map(f -> {

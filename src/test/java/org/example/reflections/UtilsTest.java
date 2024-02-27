@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.example.reflections.Utils.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,13 +55,18 @@ class UtilsTest {
     void testWriter(){
         Test2 test2 = new Test2("asd", null, 123, 123.2);
         FileWriter fileWriter = new FileWriter(new File("test_writer.txt"));
-        fileWriter.write(test2);
+        //fileWriter.write(test2);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("a", test2);
+        map.put("b", new Test2());
+        fileWriter.writeMap(map);
     }
 
     @Test
     void testReader(){
         FileReader fileReader = new FileReader(new File("test_writer.txt"));
-        System.out.println(fileReader.read(Test2.class));
+        System.out.println(fileReader.readMap(Test2.class));
     }
 
     @Test
