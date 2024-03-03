@@ -13,7 +13,7 @@ public class Entity {
         record FieldData(String name, String value) {
         }
         return this.getClass().getSimpleName() + fieldsOf(this.getClass()).stream()
-                .filter(f -> Modifier.isStatic(f.getModifiers()))
+                .filter(f -> !Modifier.isStatic(f.getModifiers()))
                 .map(f -> {
                     try {
                         f.setAccessible(true);
