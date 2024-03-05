@@ -4,8 +4,10 @@ import lombok.extern.log4j.Log4j2;
 import org.example.geometry.*;
 import org.example.living.Bird;
 import org.example.living.Meowable;
+import org.example.other.ChatJippity;
 
 import java.util.Collection;
+import java.util.Scanner;
 
 import static java.lang.Math.pow;
 import static org.example.reflections.Utils.*;
@@ -15,10 +17,11 @@ public class Main {
     private static final int TIMEOUT_SECONDS = 5;
 
     public static void main(String[] args) throws Exception {
-        Test1 test1 = new Test1();
-        Test1 test11 = cache(test1);
-        test11.print();
-
+        ChatJippity chatJippity = new ChatJippity();
+        Scanner scanner = new Scanner(System.in);
+        while (true){
+            chatJippity.sendOpenaiApiRequest(scanner.nextLine());
+        }
     }
 
 

@@ -10,10 +10,6 @@ import java.lang.annotation.Target;
 public @interface Invoke {
 }
 
-enum Type{
-    YES, NO
-}
-
 
 
 

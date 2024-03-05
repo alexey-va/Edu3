@@ -1,6 +1,7 @@
 package org.example.reflections;
 
-import org.example.entrypoints.Main;
+import org.example.reflections.annotations.ToString;
+import org.example.reflections.annotations.Type;
 
 import java.lang.reflect.Modifier;
 import java.util.stream.Collectors;
@@ -14,7 +15,15 @@ public class Entity {
         }
         return this.getClass().getSimpleName() + fieldsOf(this.getClass()).stream()
                 .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                .map(f -> {
+                .filter(f -> {
+                    if (f.isAnnotationPresent(ToString.class))
+                        return f.getAnnotation(ToString.class).value() == Type.YES;
+                    return true;
+                }).filter(f -> {
+                    if (f.getDeclaringClass().isAnnotationPresent(ToString.class))
+                        return f.getDeclaringClass().getAnnotation(ToString.class).value() == Type.YES;
+                    return true;
+                }).map(f -> {
                     try {
                         f.setAccessible(true);
                         return new FieldData(f.getName(), f.get(this).toString());

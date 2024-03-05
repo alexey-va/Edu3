@@ -1,9 +1,15 @@
 package org.example.living;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 import org.example.entities.Name;
+import org.example.reflections.PersonTests;
+
 
 @NoArgsConstructor
+@AValidate
 public class Person {
 
     @Getter

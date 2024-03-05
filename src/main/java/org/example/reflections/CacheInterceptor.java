@@ -1,24 +1,32 @@
 package org.example.reflections;
 
-import lombok.RequiredArgsConstructor;
+import org.example.reflections.annotations.Cache;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-@RequiredArgsConstructor
 public class CacheInterceptor implements InvocationHandler {
     Map<CacheEntry, Object> cacheEntryMap = new HashMap<>();
     private final Object targetObject;
+    private Set<String> methodNames;
+
+    public CacheInterceptor(Object targetObject) {
+        this.targetObject = targetObject;
+        if (targetObject.getClass().isAnnotationPresent(Cache.class)) {
+            String[] methods = targetObject.getClass().getAnnotation(Cache.class).value();
+            if (methods.length != 0) {
+                methodNames = new HashSet<>();
+                Collections.addAll(methodNames, methods);
+            }
+        }
+    }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         method.setAccessible(true);
-        if (method.getReturnType() == void.class) {
+        if (method.getReturnType() == void.class || (methodNames != null && !methodNames.contains(method.getName()))) {
             return method.invoke(targetObject, args);
         }
         CacheEntry cacheEntry = new CacheEntry(method.getName(), readFields(), args);
